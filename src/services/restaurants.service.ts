@@ -9,10 +9,8 @@ import HttpError from '../utils/httpError';
 
 const DATA_PATH = path.join(__dirname, '..', 'data', 'restaurants.json');
 const RESTAURANT_COLUMNS = 'id,name,category,location,price_range,rating,description,recommended_menu,likes,image';
-// 일반 API의 저장소가 아니라 기존 sync-demo가 동기로 읽을 마지막 조회 결과입니다.
 let synchronousDemoSnapshot: Restaurant[] = loadRestaurantsSync();
 
-// 파일 읽기·동기 실행 비교용입니다. 일반 맛집 API는 DB를 사용합니다.
 export function loadRestaurantsSync(): Restaurant[] {
   const raw = readFileSync(DATA_PATH, 'utf8');
   const parsed: RestaurantInput[] = JSON.parse(raw);
@@ -78,7 +76,6 @@ export async function createRestaurant(payload: Partial<CreateRestaurantInput>):
     likes: 0,
     image: payload.image ?? '',
   };
-  // id는 PostgreSQL identity가 생성합니다. 서버 메모리로 계산하지 않습니다.
   const { data, error } = await getSupabase()
     .from('restaurants')
     .insert(row)
@@ -91,7 +88,6 @@ export async function createRestaurant(payload: Partial<CreateRestaurantInput>):
 }
 
 export async function resetStore(): Promise<void> {
-  // 기존 reset-demo의 동작을 유지합니다. SQL 함수 안에서 전체 초기화를 처리합니다.
   const { error } = await getSupabase().rpc('reset_restaurant_demo_data');
   if (error) throwDatabaseError(error);
   synchronousDemoSnapshot = loadRestaurantsSync();

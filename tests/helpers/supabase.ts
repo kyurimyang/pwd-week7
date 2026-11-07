@@ -18,8 +18,6 @@ function seedRows(): RestaurantRow[] {
 
 let rows = seedRows();
 
-// Supabase 자격증명 없이 서비스·HTTP 계약을 검사합니다.
-// 실제 PostgreSQL 스키마와 영구 저장은 schema.postgres.ts에서 별도로 검증합니다.
 export const databaseClient = {
   from(table: string) {
     if (table !== 'restaurants') throw new Error(`Unexpected table: ${table}`);
